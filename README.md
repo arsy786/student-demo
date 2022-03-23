@@ -6,6 +6,7 @@ This is part of a series of demo applications that each will add more complexity
 1 table, full testing, in memory db
 
 | Difficulty: | Intermediate |
+| ----------- | ----------- |
 | Model(s): | Student |
 | Testing: | JUnit/Mockito, Cucumber |
 | Database: | H2 |
