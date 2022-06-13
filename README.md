@@ -8,7 +8,7 @@ This is part of a series of demo applications that each will add more complexity
 | Difficulty: | Intermediate |
 | ----------- | ----------- |
 | Model(s): | Student |
-| Testing: | JUnit/Mockito, Cucumber|
+| Testing: | JUnit/Mockito (MockMvc), Cucumber, POSTMAN|
 | Database: | H2 |
 
 *NOTE:* Only successful (2xx) HttpStatus Code tests working.
