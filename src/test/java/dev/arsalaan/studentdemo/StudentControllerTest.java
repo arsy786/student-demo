@@ -39,9 +39,9 @@ public class StudentControllerTest {
     @MockBean
     StudentService studentService;
 
-    Student student1 = new Student(1L, "name1", "email1", LocalDate.parse("2001-01-01"));
-    Student student2 = new Student(2L, "name2", "email2", LocalDate.parse("2002-02-02"));
-    Student student3 = new Student(3L, "name3", "email3", LocalDate.parse("2003-03-03"));
+    Student student1 = new Student(1L, "name1", "email1@gmail.com", LocalDate.parse("2001-01-01"));
+    Student student2 = new Student(2L, "name2", "email2@gmail.com", LocalDate.parse("2002-02-02"));
+    Student student3 = new Student(3L, "name3", "email3@gmail.com", LocalDate.parse("2003-03-03"));
 
     @Test //Annotation for JUnit to add Tests in a list to be ran
     public void getAllStudents_success() throws Exception {
@@ -107,7 +107,7 @@ public class StudentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test //FIX
+    @Test //FIXED
     public void createStudent_success() throws Exception {
 
         // The POST request handler accepts a POST request and maps the provided values into a PatientRecord POJO via the @RequestBody annotation.
@@ -135,7 +135,7 @@ public class StudentControllerTest {
     @Test
     public void createStudent_emailTaken() throws Exception {
 
-        Student student4 = new Student("name4", "email3", LocalDate.parse("2004-04-04"));
+        Student student4 = new Student("name4", "email3@gmail.com", LocalDate.parse("2004-04-04"));
 
         //Mockito.when(studentService.createStudent(student3)).thenReturn(2);
         Mockito.when(studentService.createStudent(Mockito.any(Student.class))).thenReturn(1);

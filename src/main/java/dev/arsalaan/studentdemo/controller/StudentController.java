@@ -5,9 +5,11 @@ import dev.arsalaan.studentdemo.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import dev.arsalaan.studentdemo.service.StudentService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,7 +46,7 @@ public class StudentController {
     }
 
     @PostMapping("/")
-    public ResponseEntity createStudent(@RequestBody Student student) {
+    public ResponseEntity createStudent(@Valid @RequestBody Student student) {
         int num = studentService.createStudent(student);
 
         if (num == 1) {

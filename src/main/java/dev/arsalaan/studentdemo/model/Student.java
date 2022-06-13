@@ -3,6 +3,9 @@ package dev.arsalaan.studentdemo.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -13,7 +16,13 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "name cannot be null")
+    @Size(min=2, message = "name must not be less than {min} characters")
     private String name;
+
+    @NotNull(message = "email cannot be null")
+    @Email
     private String email;
 
     @JsonFormat(pattern = "yyyy-MM-dd", shape=JsonFormat.Shape.STRING)
