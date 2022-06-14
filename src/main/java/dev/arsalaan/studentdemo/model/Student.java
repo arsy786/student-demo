@@ -1,6 +1,7 @@
 package dev.arsalaan.studentdemo.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -8,9 +9,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "student")
 public class Student {
 
     @Id
@@ -30,6 +33,10 @@ public class Student {
 
     @Transient //does not create age column in DB (as it can be calc'd)
     private Integer age;
+
+    @JsonIgnore
+    @ManyToOne
+    private Course course;
 
     public Student() {
     }
