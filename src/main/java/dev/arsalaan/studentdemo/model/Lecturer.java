@@ -30,11 +30,11 @@ public class Lecturer {
         this.rating = rating;
     }
 
-    public Long getId() {
+    public Long getLecturerId() {
         return lecturerId;
     }
 
-    public void setId(Long lecturerId) {
+    public void setLecturerId(Long lecturerId) {
         this.lecturerId = lecturerId;
     }
 

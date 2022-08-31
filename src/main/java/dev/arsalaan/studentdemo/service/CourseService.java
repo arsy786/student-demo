@@ -1,13 +1,14 @@
 package dev.arsalaan.studentdemo.service;
 
 import dev.arsalaan.studentdemo.model.Course;
-import dev.arsalaan.studentdemo.model.Lecturer;
 import dev.arsalaan.studentdemo.repository.CourseRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Service
 public class CourseService {
 
     private final CourseRepository courseRepository;
@@ -21,7 +22,7 @@ public class CourseService {
     }
 
     public Course getCourseById(Long courseId) {
-        return courseRepository.findById(courseId).get();
+        return courseRepository.findById(courseId).orElse(null);
     }
 
     public Course addCourse(Course course) {
@@ -49,8 +50,15 @@ public class CourseService {
 
     }
 
-    public void deleteCourseById(Long courseId) {
-        courseRepository.deleteById(courseId);
+    public boolean deleteCourseById(Long courseId) {
+        boolean exists = courseRepository.existsById(courseId);
+
+        if (exists) {
+            courseRepository.deleteById(courseId);
+            return true;
+        }
+
+        return false;
     }
 
 

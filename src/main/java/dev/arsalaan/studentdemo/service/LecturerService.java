@@ -1,7 +1,6 @@
 package dev.arsalaan.studentdemo.service;
 
 import dev.arsalaan.studentdemo.model.Lecturer;
-import dev.arsalaan.studentdemo.model.Student;
 import dev.arsalaan.studentdemo.repository.LecturerRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ public class LecturerService {
     }
 
     public Lecturer getLecturerById(Long lecturerId) {
-        return lecturerRepository.findById(lecturerId).get();
+        return lecturerRepository.findById(lecturerId).orElse(null);
     }
 
     public Lecturer addLecturer(Lecturer lecturer) {
@@ -52,8 +51,15 @@ public class LecturerService {
 
     }
 
-    public void deleteLecturerById(Long lecturerId) {
-        lecturerRepository.deleteById(lecturerId);
+    public boolean deleteLecturerById(Long lecturerId) {
+        boolean exists = lecturerRepository.existsById(lecturerId);
+
+        if (exists) {
+            lecturerRepository.deleteById(lecturerId);
+            return true;
+        }
+
+        return false;
     }
 
 }
