@@ -3,6 +3,7 @@ package dev.arsalaan.studentdemo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,36 +12,30 @@ public class Lecturer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long lecturerId;
     private String name;
     private Integer rating;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "lecturer")
-    private Set<Course> courses;
 
     public Lecturer() {
     }
 
-    public Lecturer(Long id, String name, Integer rating, Set<Course> courses) {
-        this.id = id;
+    public Lecturer(Long lecturerId, String name, Integer rating) {
+        this.lecturerId = lecturerId;
         this.name = name;
         this.rating = rating;
-        this.courses = courses;
     }
 
-    public Lecturer(String name, Integer rating, Set<Course> courses) {
+    public Lecturer(String name, Integer rating) {
         this.name = name;
         this.rating = rating;
-        this.courses = courses;
     }
 
     public Long getId() {
-        return id;
+        return lecturerId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(Long lecturerId) {
+        this.lecturerId = lecturerId;
     }
 
     public String getName() {
@@ -59,21 +54,12 @@ public class Lecturer {
         this.rating = rating;
     }
 
-    public Set<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
-    }
-
     @Override
     public String toString() {
         return "Lecturer{" +
-                "id=" + id +
+                "lecturerId=" + lecturerId +
                 ", name='" + name + '\'' +
                 ", rating=" + rating +
-                ", courses=" + courses +
                 '}';
     }
 }

@@ -18,7 +18,7 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    @Autowired
+    //@Autowried not needed
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }

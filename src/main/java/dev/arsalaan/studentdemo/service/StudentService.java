@@ -46,7 +46,7 @@ public class StudentService {
 
     }
 
-    @Transactional
+    //@Transactional not needed
     public int updateStudent(Long studentId, String name, String email) {
 
         Optional<Student> studentOptional = studentRepository.findById(studentId);
@@ -68,6 +68,7 @@ public class StudentService {
             }
             student.setEmail(email);
         }
+        studentRepository.save(student); //removes the need for @Transactional
         return 3;
 
     }

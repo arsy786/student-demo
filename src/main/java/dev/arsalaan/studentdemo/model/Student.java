@@ -34,8 +34,8 @@ public class Student {
     @Transient //does not create age column in DB (as it can be calc'd)
     private Integer age;
 
-    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "course_id", referencedColumnName = "courseId")
     private Course course;
 
     public Student() {
