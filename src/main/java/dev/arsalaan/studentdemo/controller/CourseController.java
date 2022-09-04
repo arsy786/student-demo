@@ -13,12 +13,14 @@ import java.util.List;
 @RequestMapping("/api/v1/course")
 public class CourseController {
 
+    // Dependency Injection
     private final CourseService courseService;
 
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
 
+    // [GET] View All Courses
     @GetMapping("/")
     public ResponseEntity<List<Course>> getAllCourses() {
         List<Course> courses = courseService.getAllCourses();
@@ -30,6 +32,7 @@ public class CourseController {
         return ResponseEntity.ok(courseService.getAllCourses());
     }
 
+    // [GET] View a specific Course
     @GetMapping("/{courseId}")
     public ResponseEntity<Course> getCourseById(@PathVariable("courseId") Long courseId) {
         Course course = courseService.getCourseById(courseId);
@@ -41,34 +44,58 @@ public class CourseController {
         return new ResponseEntity<Course>(course, HttpStatus.OK);
     }
 
+    // [POST] Create a Course
     @PostMapping("/")
     public ResponseEntity createCourse(@Valid @RequestBody Course course) {
-        courseService.addCourse(course);
-        return new ResponseEntity(HttpStatus.CREATED);
+        courseService.createCourse(course);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    // [PUT] Update a specific Course
     @PutMapping("/{courseId}")
-    public ResponseEntity updateCourse(@PathVariable("courseId") Long courseId, @RequestBody Course course) {
-        int val = courseService.updateCourse(courseId, course.getName(), course.getDuration());
-
-        if (val == 1) {
-            return new ResponseEntity("Course with id " + courseId + " does not exist", HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity updateCourseById(@PathVariable("courseId") Long courseId, @RequestBody Course course) {
+        courseService.updateCourseById(courseId, course.getName(), course.getDuration());
         return ResponseEntity.ok().build();
     }
 
+    // [DELETE] Remove a specific Course
     @DeleteMapping("/{courseId}")
     public ResponseEntity deleteCourseById(@PathVariable("courseId") Long courseId) {
+        courseService.deleteCourseById(courseId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
-        boolean exists = courseService.deleteCourseById(courseId);
+    // [GET] View All Courses By Lecturer Id
+    @GetMapping("/lecturer/{lecturerId}")
+    public ResponseEntity<List<Course>> viewAllCoursesByLecturerId(@PathVariable Long lecturerId) {
 
-        if (exists) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        List<Course> courses = courseService.viewAllCoursesByLecturerId(lecturerId);
+
+        if (courses == null || courses.isEmpty()) {
+            return new ResponseEntity<>(courses, HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity("Course with id " + courseId + " does not exist", HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(courses);
     }
+
+    // [POST] Add a Course to a specific Lecturer
+    @PostMapping("/{courseId}/lecturer/{lecturerId}")
+    public ResponseEntity addCourseToLecturer(@PathVariable("lecturerId") Long lecturerId,
+                                              @PathVariable("courseId") Long courseId) {
+        courseService.addCourseToLecturer(lecturerId, courseId);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // [DELETE] Remove a specific Course assigned to a Lecturer
+    @DeleteMapping("/{courseId}/lecturer/{lecturerId}")
+    public ResponseEntity removeCourseFromLecturer(@PathVariable("lecturerId") Long lecturerId,
+                                                   @PathVariable("courseId") Long courseId) {
+        courseService.removeCourseFromLecturer(lecturerId, courseId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+
 
 
 }

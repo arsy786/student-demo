@@ -1,10 +1,12 @@
 package dev.arsalaan.studentdemo.service;
 
 import dev.arsalaan.studentdemo.exception.ApiRequestException;
+import dev.arsalaan.studentdemo.model.Course;
 import dev.arsalaan.studentdemo.model.Student;
+import dev.arsalaan.studentdemo.repository.CourseRepository;
 import dev.arsalaan.studentdemo.repository.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -15,9 +17,11 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, CourseRepository courseRepository) {
         this.studentRepository = studentRepository;
+        this.courseRepository = courseRepository;
     }
 
     public List<Student> getAllStudents(){
@@ -25,36 +29,24 @@ public class StudentService {
     }
 
     public Student getStudentById(Long studentId) {
-        Optional<Student> studentOptional = studentRepository.findById(studentId);
-
-        if (studentOptional.isPresent()) {
-            return studentOptional.get();
-        }
-
-        return null;
+        return studentRepository.findById(studentId).orElseThrow(
+                () -> new ApiRequestException("student with id " + studentId + " does not exist"));
     }
 
-    public int createStudent(Student student) {
-        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+    public void createStudent(Student student) {
+        Optional<Student> studentOptionalEmail = studentRepository.findStudentByEmail(student.getEmail());
 
-        if (studentOptional.isPresent()) {
-            return 1;
+        if (studentOptionalEmail.isPresent()) {
+            throw new IllegalStateException("email of " + student.getEmail() + " taken");
         }
 
         studentRepository.save(student);
-        return 2; //true = 2
-
     }
 
-    //@Transactional not needed
-    public int updateStudent(Long studentId, String name, String email) {
+    public void updateStudent(Long studentId, String name, String email) {
 
-        Optional<Student> studentOptional = studentRepository.findById(studentId);
-
-        if (!studentOptional.isPresent()) {
-            return 1;
-        }
-        Student student = studentOptional.get();
+        Student student = studentRepository.findById(studentId).orElseThrow(
+                () -> new ApiRequestException("student with id " + studentId + " does not exist"));
 
         if (name != null && name.length() > 0 && !Objects.equals(student.getName(), name)) {
             student.setName(name);
@@ -64,25 +56,80 @@ public class StudentService {
             Optional<Student> studentOptionalEmail = studentRepository.findStudentByEmail(email);
 
             if (studentOptionalEmail.isPresent()) {
-                return 2;
+                throw new IllegalStateException("email of " + student.getEmail() + " taken");
             }
+
             student.setEmail(email);
         }
+
         studentRepository.save(student); //removes the need for @Transactional
-        return 3;
+    }
+
+    public void deleteStudentById(Long studentId) {
+        boolean exists = studentRepository.existsById(studentId);
+
+        if (!exists) {
+            throw new ApiRequestException("student with id " + studentId + " does not exist");
+        }
+
+        studentRepository.deleteById(studentId);
+    }
+
+    // [GET] View All Students By Course Id
+    public List<Student> viewAllStudentsByCourseId(Long courseId) {
+
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ApiRequestException("course with id " + courseId + " does not exist"));
+
+        // courseRepository.findStudentByCourseCourseId(courseId);
+        return course.getStudents();
+    }
+
+
+    // [POST] Add a specific Student to a specific Course
+    @Transactional
+    public void addStudentToCourse(Long courseId, Long studentId) {
+
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ApiRequestException("course with id " + courseId + " does not exist"));
+
+        Student student = studentRepository.findById(studentId).orElseThrow(
+                () -> new ApiRequestException("student with id " + studentId + " does not exist"));
+
+        if (Objects.nonNull(student.getCourse())) {
+            throw new ApiRequestException("student with id " + studentId + " already assigned to course with id " + student.getCourse().getCourseId());
+        }
+
+        student.setCourse(course); // tie Course to Student
+        course.getStudents().add(student); // tie Student to Course
+        course.setStudents(course.getStudents()); // tie Student to Course
 
     }
 
-    public boolean deleteStudentById(Long studentId) {
+    // [DELETE] Remove a specific student assigned to a Course
+    @Transactional
+    public void removeStudentFromCourse(Long courseId, Long studentId) {
 
-        boolean exists = studentRepository.existsById(studentId);
+        Course course = courseRepository.findById(courseId).orElseThrow(
+                () -> new ApiRequestException("course with id " + courseId + " does not exist"));
 
-        if (exists) {
-            studentRepository.deleteById(studentId);
-            return true;
+        Student student = studentRepository.findById(studentId).orElseThrow(
+                () -> new ApiRequestException("student with id " + studentId + " does not exist"));
+
+
+        if(!student.getCourse().getCourseId().equals(course.getCourseId())) {
+            throw new ApiRequestException("student with id " + studentId + " is not assigned to the course with id " + courseId);
         }
 
-        return false;
+        if (Objects.isNull(student.getCourse())) {
+            throw new ApiRequestException("student with id " + studentId + " is not assigned to any course");
+        }
+
+        // course.getStudents().remove(student); - would be to remove student studying course from the student list in course entity (if bi-directional @OneToMany implemented)
+        student.setCourse(null); // sets lecturer field in course to null instead of removing the parents AND deleting child
+        course.getStudents().remove(student);
+        course.setStudents(course.getStudents());
+
     }
 
 }

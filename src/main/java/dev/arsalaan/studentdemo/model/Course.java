@@ -1,13 +1,22 @@
 package dev.arsalaan.studentdemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+@Builder
+@Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "course")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "courseId")
+// ^ serialization of entities with bidirectional relationships, prevents infinite recursion and allows both entities to be viewed
 public class Course {
 
     @Id
@@ -16,65 +25,34 @@ public class Course {
     private String name;
     private Integer duration;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "lecturer_id", referencedColumnName = "lecturerId")
     private Lecturer lecturer;
 
-    public Course() {
-    }
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
+    private List<Student> students = new ArrayList<>();
 
-    public Course(Long courseId, String name, Integer duration, Lecturer lecturer) {
-        this.courseId = courseId;
-        this.name = name;
-        this.duration = duration;
-        this.lecturer = lecturer;
-    }
-
-    public Course(String name, Integer duration, Lecturer lecturer) {
-        this.name = name;
-        this.duration = duration;
-        this.lecturer = lecturer;
-    }
-
-    public Long getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Long courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
+    /* @JsonIgnore annotation on the getLecturer() method in the Course(child) entity.
+    This is done to avoid an infinite recursion going on during serialization since
+    Author refers to Book and Book refer to Author. */
+    @JsonIgnore // will not see lecturer in normal GET course request
     public Lecturer getLecturer() {
         return lecturer;
     }
 
+    @JsonIgnore
     public void setLecturer(Lecturer lecturer) {
         this.lecturer = lecturer;
     }
 
-    @Override
-    public String toString() {
-        return "Course{" +
-                "courseId=" + courseId +
-                ", name='" + name + '\'' +
-                ", duration=" + duration +
-                ", lecturer=" + lecturer +
-                '}';
+    /* will not see student list in normal GET course request
+    @JsonIgnore
+    public List<Student> getStudents() {
+        return students;
     }
+    @JsonIgnore
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+     */
 }

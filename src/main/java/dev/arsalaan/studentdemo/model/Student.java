@@ -5,12 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "student")
@@ -20,11 +18,11 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "name cannot be null")
+    @NotBlank(message = "name cannot be null")
     @Size(min=2, message = "name must not be less than {min} characters")
     private String name;
 
-    @NotNull(message = "email cannot be null")
+    @NotBlank(message = "email cannot be null")
     @Email
     private String email;
 
@@ -34,7 +32,7 @@ public class Student {
     @Transient //does not create age column in DB (as it can be calc'd)
     private Integer age;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "course_id", referencedColumnName = "courseId")
     private Course course;
 
@@ -97,6 +95,16 @@ public class Student {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    @JsonIgnore
+    public Course getCourse() {
+        return course;
+    }
+
+    @JsonIgnore
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     @Override

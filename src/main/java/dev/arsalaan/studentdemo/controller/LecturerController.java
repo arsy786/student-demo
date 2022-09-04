@@ -42,32 +42,21 @@ public class LecturerController {
     }
 
     @PostMapping("/")
-    public ResponseEntity createLecturer(@Valid @RequestBody Lecturer lecturer) {
-        lecturerService.addLecturer(lecturer);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<?> createLecturer(@Valid @RequestBody Lecturer lecturer) {
+        lecturerService.createLecturer(lecturer);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{lecturerId}")
-    public ResponseEntity updateLecturer(@PathVariable("lecturerId") Long lecturerId, @RequestBody Lecturer lecturer) {
-        int val = lecturerService.updateLecturer(lecturerId, lecturer.getName(), lecturer.getRating());
-
-        if (val == 1) {
-            return new ResponseEntity("lecturer with id " + lecturerId + " does not exist", HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity<?> updateLecturerById(@PathVariable("lecturerId") Long lecturerId, @RequestBody Lecturer lecturer) {
+        lecturerService.updateLecturerById(lecturerId, lecturer.getName(), lecturer.getRating());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lecturerId}")
-    public ResponseEntity deleteLecturerById(@PathVariable("lecturerId") Long lecturerId) {
-
-        boolean exists = lecturerService.deleteLecturerById(lecturerId);
-
-        if (exists) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity("lecturer with id " + lecturerId + " does not exist", HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> deleteLecturerById(@PathVariable("lecturerId") Long lecturerId) {
+        lecturerService.deleteLecturerById(lecturerId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

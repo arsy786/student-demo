@@ -1,9 +1,11 @@
 package dev.arsalaan.studentdemo.service;
 
+import dev.arsalaan.studentdemo.exception.ApiRequestException;
 import dev.arsalaan.studentdemo.model.Lecturer;
 import dev.arsalaan.studentdemo.repository.LecturerRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,22 +24,25 @@ public class LecturerService {
     }
 
     public Lecturer getLecturerById(Long lecturerId) {
-        return lecturerRepository.findById(lecturerId).orElse(null);
+        return lecturerRepository.findById(lecturerId).orElseThrow(
+                () -> new ApiRequestException("lecturer with id " + lecturerId + " does not exist"));
     }
 
-    public Lecturer addLecturer(Lecturer lecturer) {
-        return lecturerRepository.save(lecturer);
-    }
+    public void createLecturer(Lecturer lecturer) {
+        Optional<Lecturer> lecturerOptional = lecturerRepository.findLecturerByName(lecturer.getName());
 
-    public int updateLecturer(Long lectureId, String name, Integer rating) {
-
-        Optional<Lecturer> lecturerOptional = lecturerRepository.findById(lectureId);
-
-        if (!lecturerOptional.isPresent()) {
-            return 1;
+        if (lecturerOptional.isPresent()) {
+            throw new IllegalStateException("lecturer name " + lecturer.getName() + " taken");
         }
 
-        Lecturer lecturer = lecturerOptional.get();
+        lecturerRepository.save(lecturer);
+    }
+
+    @Transactional
+    public void updateLecturerById(Long lectureId, String name, Integer rating) {
+
+        Lecturer lecturer = lecturerRepository.findById(lectureId).orElseThrow(
+                () -> new ApiRequestException("lecturer with id " + lectureId + " does not exist"));
 
         if (name != null && name.length() > 0 && !Objects.equals(lecturer.getName(), name)) {
             lecturer.setName(name);
@@ -46,20 +51,20 @@ public class LecturerService {
         if (rating != null && rating >= 0 && rating <= 5 && !Objects.equals(lecturer.getRating(), rating)) {
             lecturer.setRating(rating);
         }
-        lecturerRepository.save(lecturer); //removes the need for @Transactional
-        return 2;
 
+        // lecturerRepository.save(lecturer); - would removes the need for @Transactional
     }
 
-    public boolean deleteLecturerById(Long lecturerId) {
+    public void deleteLecturerById(Long lecturerId) {
         boolean exists = lecturerRepository.existsById(lecturerId);
 
-        if (exists) {
-            lecturerRepository.deleteById(lecturerId);
-            return true;
+        if (!exists) {
+            throw new ApiRequestException("lecturer with id " + lecturerId + " does not exist");
         }
 
-        return false;
+        lecturerRepository.deleteById(lecturerId);
     }
+
+
 
 }
