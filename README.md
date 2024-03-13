@@ -27,7 +27,7 @@ The project is organized into four main branches, each representing a different 
 - Java 1.8
 - Maven
 
-### Cloning & Running the Application
+### Cloning & Running the App
 
 1.  Open your terminal or command prompt.
 
