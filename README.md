@@ -1,7 +1,5 @@
 # Student Demo Application
 
-## Overview
-
 The Student Demo Application is a basic Student Management System designed to provide fundamental CRUD (Create, Read, Update, Delete) functionality. Developed with Spring Boot, this project serves as a foundational step in a series of demo applications. Each iteration of the project introduces additional complexity and features, offering an incremental learning curve for those interested in mastering Spring Boot for scalable applications.
 
 The project is organized into four main branches, each representing a different version of the application with varying levels of complexity:
@@ -31,7 +29,7 @@ _NOTE:_ Only successful (2xx) HttpStatus Code tests working.
 - Java 1.8
 - Maven
 
-### Cloning & Running the Application
+### Cloning & Running the App
 
 1.  Open your terminal or command prompt.
 
