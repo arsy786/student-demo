@@ -11,7 +11,9 @@ The project is organized into four main branches, each representing a different 
 - **Version 3 (v3)**: Continues with one table but includes comprehensive automated tests and utilizes an in-memory database.
 - **Version 4 (v4)**: Represents the most advanced version with three tables, comprehensive automated tests, and utilizes an in-memory database.
 
-## Project Version (v3)
+## Project Difficulty & Detail (v3)
+
+1 table, full testing, in memory db
 
 | Difficulty: | Intermediate                     |
 | ----------- | -------------------------------- |
