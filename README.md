@@ -4,10 +4,13 @@ The Student Demo Application is a basic Student Management System designed to pr
 
 The project is organized into four main branches, each representing a different version of the application with varying levels of complexity:
 
-- **Version 1 (v1)**: Features one table, manual testing, and utilizes an in-memory database.
-- **Version 2 (v2)**: Also features one table but includes automated tests (limited to 2xx HttpStatus Code tests only) and utilizes an in-memory db.
-- **Version 3 (v3)**: Continues with one table but includes comprehensive automated tests and utilizes an in-memory database.
-- **Version 4 (v4)**: Represents the most advanced version with three tables, comprehensive automated tests, and utilizes an in-memory database.
+**Version 1 (v1)**: Features one table, manual testing, and utilizes an in-memory database.
+<br>
+**Version 2 (v2)**: Also features one table but includes automated tests (limited to 2xx HttpStatus Code tests only) and utilizes an in-memory db.
+<br>
+**Version 3 (v3)**: Continues with one table but includes comprehensive automated tests and utilizes an in-memory database.
+<br>
+**Version 4 (v4)**: Represents the most advanced version with three tables, comprehensive automated tests, and utilizes an in-memory database.
 
 ## Project Difficulty & Detail (v1)
 
